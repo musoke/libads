@@ -16,14 +16,73 @@ use regex::Regex;
 extern crate reqwest;
 use reqwest::Url;
 
-extern crate select;
-use select::document::Document;
-use select::predicate::Name;
-
 use std::io::Read;
 
-pub struct ADS {
+pub struct Api {
     logger: slog::Logger,
+}
+
+impl Api {
+    /// Initialize API
+    ///
+    /// Either provide a custom slog::Logger or default to the standard `log`
+    /// crate.
+    ///
+    /// # Examples
+    /// ```
+    /// libads::Api::init(None);
+    /// ```
+    pub fn init(logger: Option<slog::Logger>) -> Self {
+        Api {
+            logger: logger.unwrap_or_else(|| slog::Logger::root(slog_stdlog::StdLog.fuse(), o!())),
+        }
+    }
+
+    /// Fetch BibTeX entries from ADS
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// let ads = libads::Api::init(None);
+    ///
+    /// println!(
+    ///     "{}",
+    ///     ads.fetch_bibtex_with_key(
+    ///         libads::BibCode::new("2015MNRAS.452.2597X").expect("Good bibcode")
+    ///     ).expect("ADS record exists")
+    /// );
+    /// ```
+    pub fn fetch_bibtex_with_key(&self, key: BibCode) -> Option<String> {
+
+        let mut api_url: Url = Url::parse("http://adsabs.harvard.edu")
+            .expect("Unable to parse API URL")
+            .join("cgi-bin/")
+            .expect("Static and parseable")
+            .join("nph-bib_query/")
+            .expect("Static and parseable");
+        api_url
+            .query_pairs_mut()
+            .append_pair("data_type", "BIBTEX")
+            .append_pair("bibcode", &key.bibcode);
+
+        debug!(self.logger, "Querying ADS API";
+               "URL" => api_url.to_string());
+        let mut response = reqwest::get(api_url).expect("Failed to send get request");
+        debug!(self.logger, "GET request completed";
+               "HTTP response status" => response.status().to_string());
+
+        let mut data = String::new();
+        response
+            .read_to_string(&mut data)
+            .expect("Failed to read response.");
+
+        if let Some(entry) = data.split("\n@").nth(1) {
+            Some(entry.to_string())
+        } else {
+            None
+        }
+
+    }
 }
 
 /// Test whether a string is a valid ADS bibliographic code
