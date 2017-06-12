@@ -111,7 +111,7 @@ pub fn validate_bib_code(code: &str) -> bool {
 
 #[derive(Debug,PartialEq)]
 pub struct BibCode<'a> {
-    bibcode: &'a str,
+    pub bibcode: &'a str,
 }
 
 /// Create BibCode from &str
