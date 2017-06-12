@@ -36,11 +36,15 @@ pub struct ADS {
 /// ```
 /// assert!(libads::validate_bib_code("2017arXiv170503937B"))
 /// ```
+///
+/// ```
+/// assert!(libads::validate_bib_code("2015MNRAS.452.2597X"))
+/// ```
 pub fn validate_bib_code(code: &str) -> bool {
     // Use lazy_static to ensure that regexes are compiled only once
     lazy_static! {
         static ref REGEX: Regex = Regex::new(
-            r"^[[:digit:]]{4}[[:alnum:].]{5}[[:digit:].]{4}[ELPQ-Z[:digit:]]{1}[[:digit:].]{4}[[:alpha:]]{1}$").unwrap();
+            r"^[[:digit:]]{4}[[:alnum:]\.]{5}[[:digit:]\.]{4}[ELPQ-Z[:digit:]\.]{1}[[:digit:]\.]{4}[[:alpha:]]{1}$").unwrap();
     }
 
     REGEX.is_match(code)
