@@ -1,5 +1,6 @@
 [package]
 authors = ["Nathan Musoke <nathan.musoke@gmail.com>"]
+description = "For interacting with API of the Astonomy Data System"
 categories = ["command-line-utilities", "science"]
 keywords = ["astronomy", "ADS"]
 name = "libads"
