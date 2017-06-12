@@ -46,6 +46,32 @@ pub fn validate_bib_code(code: &str) -> bool {
     REGEX.is_match(code)
 }
 
+#[derive(Debug,PartialEq)]
+pub struct BibCode<'a> {
+    bibcode: &'a str,
+}
+
+/// Create BibCode from &str
+///
+/// Returns a `Result<Self, ()>` as this can fail.
+/// In future I may also implement `std::convert::TryFrom`, currently a [nightly only
+/// feature](https://github.com/rust-lang/rust/issues/33417).
+///
+/// # Examples
+///
+/// ```
+/// extern crate libads;
+/// libads::BibCode::new("2015MNRAS.452.2597X");
+/// ```
+impl<'a> BibCode<'a> {
+    pub fn new(s: &'a str) -> Result<Self, ()> {
+        match validate_bib_code(s) {
+            true => Ok(BibCode { bibcode: s }),
+            false => Err(()),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
