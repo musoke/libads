@@ -1,8 +1,30 @@
+/// Re-export slog
+///
+/// Users of this library can, but don't have to use slog to build their own loggers
+#[macro_use]
+pub extern crate slog;
+extern crate slog_stdlog;
+
+use slog::DrainExt;
+
 #[macro_use]
 extern crate lazy_static;
 
 extern crate regex;
 use regex::Regex;
+
+extern crate reqwest;
+use reqwest::Url;
+
+extern crate select;
+use select::document::Document;
+use select::predicate::Name;
+
+use std::io::Read;
+
+pub struct ADS {
+    logger: slog::Logger,
+}
 
 /// Test whether a string is a valid ADS bibliographic code
 ///
@@ -12,9 +34,9 @@ use regex::Regex;
 /// # Examples
 ///
 /// ```
-/// assert!(ads::validate_bibliographic_code("2017arXiv170503937B"))
+/// assert!(libads::validate_bib_code("2017arXiv170503937B"))
 /// ```
-pub fn validate_bibliographic_code(code: &str) -> bool {
+pub fn validate_bib_code(code: &str) -> bool {
     // Use lazy_static to ensure that regexes are compiled only once
     lazy_static! {
         static ref REGEX: Regex = Regex::new(
