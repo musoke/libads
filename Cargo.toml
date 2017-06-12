@@ -3,6 +3,7 @@ authors = ["Nathan Musoke <nathan.musoke@gmail.com>"]
 categories = ["command-line-utilities", "science"]
 keywords = ["astronomy", "ADS"]
 name = "libads"
+repository = "https://github.com/musoke/libads"
 publish = false
 readme = "README.md"
 version = "0.1.0-alpha"
