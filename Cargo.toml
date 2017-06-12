@@ -5,9 +5,9 @@ categories = ["command-line-utilities", "science"]
 keywords = ["astronomy", "ADS"]
 name = "libads"
 repository = "https://github.com/musoke/libads"
-publish = true
+publish = false
 readme = "README.md"
-version = "0.1.0-alpha"
+version = "0.1.0-beta"
 license = "Apache-2.0"
 
 [dependencies]
