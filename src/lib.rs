@@ -77,7 +77,7 @@ impl Api {
             .expect("Failed to read response.");
 
         if let Some(entry) = data.split("\n@").nth(1) {
-            Some(entry.to_string())
+            Some(format!("{}{}", "@", entry))
         } else {
             None
         }
