@@ -8,7 +8,7 @@
 Rudimentary rust API for the [SAO/NASA Astrophysics Data System](http://adsabs.harvard.edu/abstract_service.html).
 
 It currently just uses the "classic" website to fetch BibTeX entries.
-I am using it for another project, [inspirer](https://github.com/musoke/inspirer/).
+I am using it for another project, [inspirer](https://gitlab.com/musoke/inspirer/).
 
 ## Licence
 
