@@ -53,7 +53,6 @@ impl Api {
     /// );
     /// ```
     pub fn fetch_bibtex_with_key(&self, key: BibCode) -> Option<String> {
-
         let mut api_url: Url = Url::parse("http://adsabs.harvard.edu")
             .expect("Unable to parse API URL")
             .join("cgi-bin/")
@@ -81,7 +80,6 @@ impl Api {
         } else {
             None
         }
-
     }
 }
 
@@ -109,7 +107,7 @@ pub fn validate_bib_code(code: &str) -> bool {
     REGEX.is_match(code)
 }
 
-#[derive(Debug,PartialEq)]
+#[derive(Debug, PartialEq)]
 pub struct BibCode<'a> {
     pub bibcode: &'a str,
 }
