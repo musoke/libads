@@ -1,14 +1,8 @@
-/// Re-export slog
-///
-/// Users of this library can, but don't have to use slog to build their own loggers
-#[macro_use]
-pub extern crate slog;
-extern crate slog_stdlog;
-
-use slog::DrainExt;
-
 #[macro_use]
 extern crate lazy_static;
+
+extern crate log;
+use log::debug;
 
 extern crate regex;
 use regex::Regex;
@@ -18,24 +12,17 @@ use reqwest::Url;
 
 use std::io::Read;
 
-pub struct Api {
-    logger: slog::Logger,
-}
+pub struct Api {}
 
 impl Api {
     /// Initialize API
     ///
-    /// Either provide a custom slog::Logger or default to the standard `log`
-    /// crate.
-    ///
     /// # Examples
     /// ```
-    /// libads::Api::init(None);
+    /// libads::Api::init();
     /// ```
-    pub fn init(logger: Option<slog::Logger>) -> Self {
-        Api {
-            logger: logger.unwrap_or_else(|| slog::Logger::root(slog_stdlog::StdLog.fuse(), o!())),
-        }
+    pub fn init() -> Self {
+        Api {}
     }
 
     /// Fetch BibTeX entries from ADS
@@ -43,7 +30,7 @@ impl Api {
     /// # Examples
     ///
     /// ```
-    /// let ads = libads::Api::init(None);
+    /// let ads = libads::Api::init();
     ///
     /// println!(
     ///     "{}",
@@ -53,7 +40,6 @@ impl Api {
     /// );
     /// ```
     pub fn fetch_bibtex_with_key(&self, key: BibCode) -> Option<String> {
-
         let mut api_url: Url = Url::parse("http://adsabs.harvard.edu")
             .expect("Unable to parse API URL")
             .join("cgi-bin/")
@@ -65,11 +51,9 @@ impl Api {
             .append_pair("data_type", "BIBTEX")
             .append_pair("bibcode", &key.bibcode);
 
-        debug!(self.logger, "Querying ADS API";
-               "URL" => api_url.to_string());
+        debug!(target: "Querying ADS API", "URL = {}", api_url.to_string());
         let mut response = reqwest::get(api_url).expect("Failed to send get request");
-        debug!(self.logger, "GET request completed";
-               "HTTP response status" => response.status().to_string());
+        debug!(target: "GET request completed", "HTTP response status = {}", response.status().to_string());
 
         let mut data = String::new();
         response
@@ -81,7 +65,6 @@ impl Api {
         } else {
             None
         }
-
     }
 }
 
@@ -109,7 +92,7 @@ pub fn validate_bib_code(code: &str) -> bool {
     REGEX.is_match(code)
 }
 
-#[derive(Debug,PartialEq)]
+#[derive(Debug, PartialEq)]
 pub struct BibCode<'a> {
     pub bibcode: &'a str,
 }
